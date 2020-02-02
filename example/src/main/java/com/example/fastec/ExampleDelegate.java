@@ -16,6 +16,11 @@ public class ExampleDelegate extends LatteDelegate {
         return R.layout.delegate_main;
     }
 
+    /**
+     * 对每一个控件进行操作
+     * @param savedInstanceState
+     * @param rootView
+     */
     @Override
     public void onBindView(@Nullable Bundle savedInstanceState, View rootView) {
 
