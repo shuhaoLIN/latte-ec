@@ -3,6 +3,7 @@ package com.example.latte.net;
 import com.example.latte.app.ConfigType;
 import com.example.latte.app.Latte;
 
+import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -14,6 +15,13 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  * 单例模式
  */
 public class RestCreator {
+    //因为params一直会使用，我们现在就实例化出来，然后进行使用，不要重复申请空间
+    private static class ParamsHolder{
+        private static final WeakHashMap<String, Object> PARAMS = new WeakHashMap<>();
+    }
+    public static final WeakHashMap<String, Object> getParams(){
+        return ParamsHolder.PARAMS;
+    }
     //提供出去RestService
     public static RestService getRestService(){
         return RestServiceHolder.REST_SERVICE;
