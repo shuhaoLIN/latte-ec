@@ -4,11 +4,15 @@ import com.example.latte.net.callback.IError;
 import com.example.latte.net.callback.IFailure;
 import com.example.latte.net.callback.IRequest;
 import com.example.latte.net.callback.ISuccess;
+import com.example.latte.net.callback.RequestCallbacks;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
+
 import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * 进行请求的具体实现类
@@ -41,7 +45,59 @@ public class RestClient {
         this.FAILURE = failure;
         this.BODY = body;
     }
-    public static RestClientBuilder builder(){
+
+    public static RestClientBuilder builder() {
         return new RestClientBuilder();
+    }
+
+    private void request(HttpMethod method) {
+        final RestService service = RestCreator.getRestService();
+        Call<String> call = null;
+        //开始请求
+        if (REQUEST != null) {
+            REQUEST.onRequestStart();
+        }
+
+        switch (method) {
+            case GET:
+                call = service.get(URL, PARAMS);
+                break;
+            case POST:
+                call = service.post(URL, PARAMS);
+                break;
+            case DELETE:
+                call = service.delete(URL, PARAMS);
+                break;
+            case PUT:
+                call = service.put(URL, PARAMS);
+                break;
+            default:
+                break;
+        }
+
+        if (call != null) {
+            call.enqueue(getRequestCallback()); //该方法是封装好的异步的，所以不用自己进行起一个线程（excute就需要）
+        }
+    }
+
+    private Callback<String> getRequestCallback() {
+        return new RequestCallbacks(
+                REQUEST,
+                SUCCESS,
+                ERROR,
+                FAILURE
+        );
+    }
+    public final void get(){
+        request(HttpMethod.GET);
+    }
+    public final void post(){
+        request(HttpMethod.POST);
+    }
+    public final void delete(){
+        request(HttpMethod.DELETE);
+    }
+    public final void put(){
+        request(HttpMethod.PUT);
     }
 }
