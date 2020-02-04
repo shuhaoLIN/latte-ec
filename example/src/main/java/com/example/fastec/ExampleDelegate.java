@@ -36,10 +36,11 @@ public class ExampleDelegate extends LatteDelegate {
         RestClient.builder()
                 .url("https://www.baidu.com")
                 .params("", "")
+                .loader(getContext())
                 .success(new ISuccess() {
                     @Override
                     public void onSuccess(String response) {
-                        Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .failure(new IFailure() {

@@ -1,9 +1,12 @@
 package com.example.latte.net;
 
+import android.content.Context;
+
 import com.example.latte.net.callback.IError;
 import com.example.latte.net.callback.IFailure;
 import com.example.latte.net.callback.IRequest;
 import com.example.latte.net.callback.ISuccess;
+import com.example.latte.ui.LoaderStyle;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -19,6 +22,9 @@ public class RestClientBuilder {
     private IError mIError;
     private IFailure mIFailure;
     private RequestBody mBody;
+    //loader
+    private LoaderStyle mLoaderStyle;
+    private Context mContext;
 
     //限制只给restClient调用，使用包权限
     public RestClientBuilder() {
@@ -71,8 +77,19 @@ public class RestClientBuilder {
 //        }
 //        return mParams;
 //    }
+    public final RestClientBuilder loader(Context context, LoaderStyle loaderStyle) {
+        this.mContext = context;
+        this.mLoaderStyle = loaderStyle;
+        return this;
+    }
+
+    public final RestClientBuilder loader(Context context) {
+        this.mContext = context;
+        this.mLoaderStyle = LoaderStyle.BallSpinFadeLoaderIndicator;
+        return this;
+    }
 
     public final RestClient build() {
-        return new RestClient(mUrl, PARAMS, mIRequest, mISuccess, mIError, mIFailure, mBody);
+        return new RestClient(mUrl, PARAMS, mIRequest, mISuccess, mIError, mIFailure, mBody, mLoaderStyle, mContext);
     }
 }
